@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Student Team Sorter</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <header>
+    <div class="title-container">
+      <h1>Student Team Sorter</h1>
+    </div>
+    <p>Sort your classroom into balanced mixed teams</p>
+  </header>
+
+  <main class="container">
+    <aside class="control-panel">
+      <div class="panel-section">
+        <h2>Add Student</h2>
+        <div class="panel-section" style="gap: 8px; margin-top: 10px;">
+          <label for="student-name">Student Name</label>
+          <input type="text" id="student-name" placeholder="Enter student name..." autocomplete="off">
+        </div>
+        <div class="panel-section" style="gap: 8px; margin-top: 15px;">
+          <label>Gender</label>
+          <div class="gender-select-wrapper">
+            <div id="boy-btn" class="gender-option boy-option selected">
+              Boy
+            </div>
+            <div id="girl-btn" class="gender-option girl-option">
+              Girl
+            </div>
+          </div>
+        </div>
+        <button id="add-student-btn" class="btn btn-secondary" style="margin-top: 15px; width: 100%;">Add Student</button>
+      </div>
+
+      <div class="panel-section">
+        <h2>Student Roster</h2>
+        <div id="student-list" class="student-list-container"></div>
+      </div>
+
+      <div class="panel-section" style="border-top: 2px dashed #cbd5e1; padding-top: 15px;">
+        <h2>Debug CSV Import</h2>
+        <textarea id="csv-import-text" rows="3" placeholder="Paste CSV or dash-separated list here..."></textarea>
+        <button id="csv-import-btn" class="btn btn-orange btn-sm" style="width: 100%;">Import CSV</button>
+      </div>
+
+      <button id="sort-btn" class="btn btn-primary" style="font-size: 1.3rem;">SORT TEAMS</button>
+      <button id="clear-btn" class="btn btn-secondary" style="background: #94a3b8;">Clear All</button>
+    </aside>
+
+    <section class="whiteboard-wrapper">
+      <div class="whiteboard-header">
+        <div class="whiteboard-title">
+          Sorting Whiteboard
+        </div>
+        <div class="marker-tray">
+          <div class="marker red"></div>
+          <div class="marker blue"></div>
+          <div class="marker green"></div>
+        </div>
+      </div>
+      <div id="whiteboard-content" class="whiteboard-content">
+        <canvas id="confetti-canvas"></canvas>
+        <div id="welcome-message" class="welcome-message">
+          <h3>Welcome to the Team Sorter</h3>
+          <p>Add students on the left panel, then click the SORT TEAMS button to distribute them into mixed teams.</p>
+        </div>
+        <div id="magic-sorting-zone" class="magic-sorting-zone">
+          <div class="loader-container">
+            <div class="spinner"></div>
+          </div>
+          <h3>Sorting Students...</h3>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <script src="app.js"></script>
+</body>
+</html>
