@@ -26,7 +26,7 @@ document.getElementById('csv-import-btn').addEventListener('click', importCSV);
 
 function initRoom() {
   if (ws) {
-    ws.close();
+    try { ws.close(); } catch(e) {}
   }
   ws = new WebSocket(`wss://ntfy.sh/${roomCode}/ws`);
   ws.onopen = () => {
@@ -42,6 +42,12 @@ function initRoom() {
         handleIncomingSync(data);
       }
     } catch (e) {}
+  };
+  ws.onclose = () => {
+    setTimeout(initRoom, 2000);
+  };
+  ws.onerror = () => {
+    try { ws.close(); } catch(e) {}
   };
 }
 
@@ -221,32 +227,37 @@ function performSortingLogic() {
     return [];
   }
   
-  const teams = [];
+  const rawTeams = [];
   
   while (boys.length >= 2 && girls.length >= 1) {
-    teams.push([boys.pop(), boys.pop(), girls.pop()]);
+    rawTeams.push([boys.pop(), boys.pop(), girls.pop()]);
   }
   
   while (boys.length >= 1 && girls.length >= 2) {
-    teams.push([boys.pop(), girls.pop(), girls.pop()]);
+    rawTeams.push([boys.pop(), girls.pop(), girls.pop()]);
   }
   
   while (boys.length >= 1 && girls.length >= 1) {
-    teams.push([boys.pop(), girls.pop()]);
+    rawTeams.push([boys.pop(), girls.pop()]);
   }
   
   while (boys.length >= 3) {
-    teams.push([boys.pop(), boys.pop(), boys.pop()]);
+    rawTeams.push([boys.pop(), boys.pop(), boys.pop()]);
   }
   
   while (girls.length >= 3) {
-    teams.push([girls.pop(), girls.pop(), girls.pop()]);
+    rawTeams.push([girls.pop(), girls.pop(), girls.pop()]);
   }
   
   const leftovers = [...boys, ...girls];
   if (leftovers.length > 0) {
-    teams.push(leftovers);
+    rawTeams.push(leftovers);
   }
+  
+  const teams = rawTeams.map(members => ({
+    name: generateTeamName(),
+    members: members
+  }));
   
   return teams;
 }
@@ -262,12 +273,12 @@ function renderTeams(teams) {
     card.className = `team-card color-${colorIdx}`;
     card.style.animationDelay = `${index * 0.15}s`;
     
-    const teamName = generateTeamName();
-    const boyCount = team.filter(s => s.gender === 'boy').length;
-    const girlCount = team.filter(s => s.gender === 'girl').length;
+    const teamName = team.name;
+    const boyCount = team.members.filter(s => s.gender === 'boy').length;
+    const girlCount = team.members.filter(s => s.gender === 'girl').length;
     
     let membersHtml = '';
-    team.forEach(member => {
+    team.members.forEach(member => {
       membersHtml += `
         <div class="team-member ${member.gender}">
           <span>${member.name} (${member.gender === 'boy' ? 'Boy' : 'Girl'})</span>
