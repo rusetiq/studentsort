@@ -263,22 +263,35 @@ function performSortingLogic() {
 }
 
 function renderTeams(teams) {
+  if (!teams || !Array.isArray(teams)) return;
   const grid = document.createElement('div');
   grid.className = 'teams-grid';
   boardContent.appendChild(grid);
   
   teams.forEach((team, index) => {
+    if (!team) return;
     const card = document.createElement('div');
     const colorIdx = index % 5;
     card.className = `team-card color-${colorIdx}`;
     card.style.animationDelay = `${index * 0.15}s`;
     
-    const teamName = team.name;
-    const boyCount = team.members.filter(s => s.gender === 'boy').length;
-    const girlCount = team.members.filter(s => s.gender === 'girl').length;
+    let teamName = '';
+    let members = [];
+    
+    if (Array.isArray(team)) {
+      members = team;
+      teamName = generateTeamName();
+    } else {
+      teamName = team.name || generateTeamName();
+      members = team.members || [];
+    }
+    
+    const boyCount = members.filter(s => s && s.gender === 'boy').length;
+    const girlCount = members.filter(s => s && s.gender === 'girl').length;
     
     let membersHtml = '';
-    team.members.forEach(member => {
+    members.forEach(member => {
+      if (!member) return;
       membersHtml += `
         <div class="team-member ${member.gender}">
           <span>${member.name} (${member.gender === 'boy' ? 'Boy' : 'Girl'})</span>
